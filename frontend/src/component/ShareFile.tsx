@@ -12,7 +12,7 @@ function ShareFile({generatedURl}:props) {
   const [space,setSpace] = useState("")
 
   useEffect(()=>{
-    const u1 = 'space'+Math.floor(Math.random() * 1000)
+    const u1 = generatedURl
     const newSocket = new WebSocket(`ws://localhost:8080?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
