@@ -1,7 +1,10 @@
+import Hero from "./component/HeroComponent";
+import Instructions from "./component/Instructions";
 import ShareFile from "./component/ShareFile"
 
 function App() {
   const currentUrl = window.location.href;
+  let  generateLink
   console.log(currentUrl); 
   let spaceID :string = ""
   if(currentUrl.includes("space")){
@@ -9,12 +12,23 @@ function App() {
   }
   else{
     spaceID = 'space'+Math.floor(Math.random() * 1000)
-    const generateLink = window.location.href+spaceID
+    generateLink = window.location.href+spaceID
     console.log(generateLink)
   }
   return (
-    
-    <ShareFile generatedURl = {spaceID}></ShareFile>
+    <>
+      <section>
+        <Hero/>
+      </section>
+      <section>
+        <Instructions/>
+      </section>
+      <section>
+        <ShareFile generatedURl = {spaceID}></ShareFile>
+      </section>
+      {generateLink? generateLink:""}
+    </>
+
     
   )
 }
