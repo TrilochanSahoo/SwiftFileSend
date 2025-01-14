@@ -42,6 +42,18 @@ wss.on('connection', (socket, req) => {
     socket.on("error", console.error);
     socket.on("message", (data, isBinary) => {
         const parsedData = JSON.parse(data.toString());
+        if (parsedData.type === 'register' && parsedData.role === 'user') {
+            // spaceId = parsedData.spaceId
+            const spaId = spaceId;
+            if (spaces.has(spaId)) {
+                const space = spaces.get(spaId);
+                space.forEach((client) => {
+                    if (client != socket && client.readyState === ws_1.default.OPEN) {
+                        client.send(JSON.stringify({ user: 'user12 connected' }));
+                    }
+                });
+            }
+        }
         if (parsedData.type === 'register') {
             // spaceId = parsedData.spaceId
             if (!spaces.has(spaceId)) {

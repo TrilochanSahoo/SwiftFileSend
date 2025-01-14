@@ -22,6 +22,7 @@ function ShareFile({generatedURl}:props) {
       setSpace(u1)
       const metadata = JSON.stringify({ 
         type : 'register',
+        role : 'admin',
         spaceId : u1  })
       newSocket.send(metadata)
       console.log("connected...")
@@ -50,7 +51,7 @@ function ShareFile({generatedURl}:props) {
     return () => {
       newSocket.close();
   };
-  },[generatedURl])
+  },[])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileDownload = (arraybuffer:any, filedata:any)=>{

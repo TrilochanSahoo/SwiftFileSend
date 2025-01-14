@@ -19,7 +19,7 @@ function App() {
     {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       if(validate(atob(path.slice(1)))){
-        setSpaceId(atob(path.slice(5)))
+        setSpaceId(atob(path.slice(1)))
         setActiveReceive(true)
       }
       else

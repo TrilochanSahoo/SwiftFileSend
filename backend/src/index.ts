@@ -20,6 +20,19 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
 
     socket.on("message",(data,isBinary)=>{
         const parsedData = JSON.parse(data.toString())
+        if(parsedData.type === 'register' && parsedData.role === 'user'){
+            // spaceId = parsedData.spaceId
+            const spaId = spaceId
+            if(spaces.has(spaId)){
+               const space = spaces.get(spaId)
+               space.forEach((client:any)=>{
+                    if(client != socket && client.readyState === WebSocket.OPEN){
+                        client.send(JSON.stringify({ user: 'user12 connected' }))
+                    }
+               }) 
+            }
+            
+        }
         if(parsedData.type === 'register'){
             // spaceId = parsedData.spaceId
             if (!spaces.has(spaceId)) {
