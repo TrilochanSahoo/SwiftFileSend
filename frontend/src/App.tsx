@@ -1,20 +1,45 @@
+import { useEffect, useState } from "react";
 import Hero from "./component/HeroComponent";
 import Instructions from "./component/Instructions";
 import ShareFile from "./component/ShareFile"
+import ReceiveFile from "./component/receiveFile";
 
 function App() {
-  const currentUrl = window.location.href;
+  const [activeShare, setActiveShare] = useState(false)
+  const [activeReceive, setActiveReceive] = useState(false)
+  const [spaceId, setSpaceId] = useState("")
+
   let  generateLink
-  console.log(currentUrl); 
   let spaceID :string = ""
-  if(currentUrl.includes("space")){
-    spaceID = currentUrl.split('/').pop() || ""
+  const currentUrl = window.location.href;
+
+  useEffect(() => {
+    const path = new URL(currentUrl).pathname
+    if(path != "/")
+    {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      if(validate(atob(path.slice(1)))){
+        setSpaceId(atob(path.slice(5)))
+        setActiveReceive(true)
+      }
+      else
+        alert("Invalid URL!")
+    }
+  }, [currentUrl]); 
+
+  const validate = (data:string)=>{
+    const regex = /^space\d{1,4}$/;
+    return regex.test(data);
   }
-  else{
+
+  const createSpaceHandler = ()=>{
     spaceID = 'space'+Math.floor(Math.random() * 1000)
-    generateLink = window.location.href+spaceID
+    setSpaceId(spaceID)
+    generateLink = window.location.href+ btoa(spaceID)
     console.log(generateLink)
+    setActiveShare(true)
   }
+
   return (
     <>
       <section>
@@ -24,12 +49,21 @@ function App() {
         <Instructions/>
       </section>
       <section>
-        <ShareFile generatedURl = {spaceID}></ShareFile>
+        <button onClick={createSpaceHandler}> create space</button>
       </section>
-      {generateLink? generateLink:""}
+      {activeReceive && 
+      <div>
+        <ReceiveFile generatedURl = {spaceId}></ReceiveFile>
+      </div>
+      }
+      {activeShare && 
+        <div>
+          <ShareFile generatedURl = {spaceId}></ShareFile>
+          {generateLink? generateLink:""}
+        </div>
+      }
+      
     </>
-
-    
   )
 }
 
