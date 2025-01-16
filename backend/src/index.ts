@@ -12,6 +12,18 @@ const wss = new WebSocketServer({server})
 
 let count = 0
 
+function makeid(length:number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
 wss.on('connection',(socket,req: IncomingMessage)=>{
     const query = parse(req.url || '', true).query;
     const spaceId = query["spaceId"] as string;
@@ -20,25 +32,34 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
 
     socket.on("message",(data,isBinary)=>{
         const parsedData = JSON.parse(data.toString())
-        if(parsedData.type === 'register' && parsedData.role === 'user'){
+        if(parsedData.type === 'register' && parsedData.role === 'user' && parsedData.access === "false"){
             // spaceId = parsedData.spaceId
             const spaId = spaceId
             if(spaces.has(spaId)){
                const space = spaces.get(spaId)
-               space.forEach((client:any)=>{
-                    if(client != socket && client.readyState === WebSocket.OPEN){
-                        client.send(JSON.stringify({ user: 'user12 connected' }))
-                    }
-               }) 
+               console.log(space)
+               space.forEach((sp:any) => {
+                const [roleData,accessData,connection] = sp
+                const [type, socketArray] = connection
+                console.log(type)
+                console.log('socketArray:', socketArray, 'Type:', typeof socketArray);
+                    // socketArray.forEach((client:any)=>{
+                    //     if(client != socket && client.readyState === WebSocket.OPEN){
+                    //         client.send(JSON.stringify({ 
+                    //             access : false,
+                    //             user: 'user'+makeid(7)
+                    //         }))
+                    //     }
+                    // }) 
+               })
             }
-            
         }
         if(parsedData.type === 'register'){
             // spaceId = parsedData.spaceId
             if (!spaces.has(spaceId)) {
                 spaces.set(spaceId, new Set());
             }
-            spaces.get(spaceId).add(socket);
+            spaces.get(spaceId).add([["role", parsedData.role], ["access", parsedData.access],[ "con", socket]]);
             console.log(`User added to group: ${spaceId}`);
         }
         else if(parsedData.type === 'message'){

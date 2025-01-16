@@ -12,6 +12,7 @@ function ShareFile({generatedURl}:props) {
   const [shareLink, setShareLink] = useState<string | null>(null)
   // const [filedata, setfiledata] = useState<null | object>(null)
   const [space,setSpace] = useState("")
+  const [usersMetadata,setUsersMetadata] = useState([])
 
   useEffect(()=>{
     const u1 = generatedURl
@@ -23,6 +24,7 @@ function ShareFile({generatedURl}:props) {
       const metadata = JSON.stringify({ 
         type : 'register',
         role : 'admin',
+        access : "true",
         spaceId : u1  })
       newSocket.send(metadata)
       console.log("connected...")
@@ -33,8 +35,12 @@ function ShareFile({generatedURl}:props) {
     newSocket.onmessage = (message)=>{
       if(typeof message.data === "string"){
         const metadata = JSON.parse(message.data)
+        if("access" in metadata){
+          setUsersMetadata(metadata)
+        }else{
+          fileMetaRef.current = metadata;
+        }
         console.log(metadata)
-        fileMetaRef.current = metadata;
       }
       else if(message.data instanceof ArrayBuffer){
         const filedata = fileMetaRef.current
@@ -138,6 +144,7 @@ function ShareFile({generatedURl}:props) {
       <input type="file" onChange={handleFileChange} />
       <button onClick={sendFileHandler}>send</button>
       {space}
+      {usersMetadata}
     </>
   )
 }

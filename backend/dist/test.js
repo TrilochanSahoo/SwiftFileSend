@@ -59,19 +59,15 @@ wss.on('connection', (socket, req) => {
             if (spaces.has(spaId)) {
                 const space = spaces.get(spaId);
                 console.log(space);
-                space.forEach((sp) => {
-                    const [roleData, accessData, connection] = sp;
-                    const [type, socketArray] = connection;
-                    console.log(type);
-                    console.log('socketArray:', socketArray, 'Type:', typeof socketArray);
-                    // socketArray.forEach((client:any)=>{
-                    //     if(client != socket && client.readyState === WebSocket.OPEN){
-                    //         client.send(JSON.stringify({ 
-                    //             access : false,
-                    //             user: 'user'+makeid(7)
-                    //         }))
-                    //     }
-                    // }) 
+                const [roleData, accessData, connection] = space;
+                const [type, socketArray] = connection;
+                socketArray.forEach((client) => {
+                    if (client != socket && client.readyState === ws_1.default.OPEN) {
+                        client.send(JSON.stringify({
+                            access: false,
+                            user: 'user' + makeid(7)
+                        }));
+                    }
                 });
             }
         }

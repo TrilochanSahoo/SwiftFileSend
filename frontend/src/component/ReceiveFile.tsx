@@ -23,6 +23,7 @@ function ReceiveFile({generatedURl}:props) {
       const metadata = JSON.stringify({ 
         type : 'register',
         role : 'user',
+        access : "false",
         spaceId : u1  })
       newSocket.send(metadata)
       console.log("connected...")
