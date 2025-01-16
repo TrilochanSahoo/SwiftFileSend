@@ -5,6 +5,11 @@ interface props {
     generatedURl : string
 }
 
+interface metadata {
+  access : boolean,
+  user : string
+}
+
 function ShareFile({generatedURl}:props) {
   const fileMetaRef = useRef(null)
   const [socket,setSocket] = useState<null | WebSocket>(null)
@@ -12,7 +17,7 @@ function ShareFile({generatedURl}:props) {
   const [shareLink, setShareLink] = useState<string | null>(null)
   // const [filedata, setfiledata] = useState<null | object>(null)
   const [space,setSpace] = useState("")
-  const [usersMetadata,setUsersMetadata] = useState([])
+  const [usersMetadata,setUsersMetadata] = useState<metadata[]>([])
 
   useEffect(()=>{
     const u1 = generatedURl
@@ -36,7 +41,8 @@ function ShareFile({generatedURl}:props) {
       if(typeof message.data === "string"){
         const metadata = JSON.parse(message.data)
         if("access" in metadata){
-          setUsersMetadata(metadata)
+          
+          setUsersMetadata([...usersMetadata, metadata])
         }else{
           fileMetaRef.current = metadata;
         }
@@ -101,50 +107,58 @@ function ShareFile({generatedURl}:props) {
     // socket?.send(selectedFile)
   }
 
+  console.log(usersMetadata)
+
   return (
     <>
-    <section id="file-sharing" className="w-full py-12 md:py-24 lg:py-32">
-      <div className="container px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Share Your File
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Select a file to share and generate a QR code for easy access.
-            </p>
-            <div className="space-y-2">
-              <input type="file" name="" id="" />
-              <button>
-              Share File
-              </button>
+      <section id="file-sharing" className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Share Your File
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                Select a file to share and generate a QR code for easy access.
+              </p>
+              <div className="space-y-2">
+                <input type="file" name="" id="" />
+                <button>
+                Share File
+                </button>
+              </div>
+            </div>
+            <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
+              {shareLink ? (
+                <div className="space-y-4">
+                  <p className="font-medium">Scan this QR code to access the file:</p>
+                  <div className="flex justify-center">
+                    {/* <QRCode value={shareLink} size={200} /> */}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 break-all">{shareLink}</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full space-y-4">
+                  <QrCode className="w-16 h-16 text-gray-400" />
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Share a file to generate a QR code
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-          <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
-            {shareLink ? (
-              <div className="space-y-4">
-                <p className="font-medium">Scan this QR code to access the file:</p>
-                <div className="flex justify-center">
-                  {/* <QRCode value={shareLink} size={200} /> */}
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 break-all">{shareLink}</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full space-y-4">
-                <QrCode className="w-16 h-16 text-gray-400" />
-                <p className="text-gray-500 dark:text-gray-400">
-                  Share a file to generate a QR code
-                </p>
-              </div>
-            )}
-          </div>
         </div>
-      </div>
-    </section>
+      </section>
       <input type="file" onChange={handleFileChange} />
       <button onClick={sendFileHandler}>send</button>
       {space}
-      {usersMetadata}
+      {usersMetadata.map((item,index)=>{
+        return <div key={index}>
+
+          abc
+          {item.user}
+        </div>
+      })}
     </>
   )
 }
