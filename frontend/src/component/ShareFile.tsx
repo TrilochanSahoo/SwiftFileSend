@@ -1,4 +1,4 @@
-import { QrCode } from "lucide-react";
+import { Check, QrCode, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react"
 
 interface props {
@@ -30,7 +30,8 @@ function ShareFile({generatedURl}:props) {
         type : 'register',
         role : 'admin',
         access : "true",
-        spaceId : u1  })
+        spaceId : u1,
+        userId : "1000"  })
       newSocket.send(metadata)
       console.log("connected...")
       setSocket(newSocket)
@@ -41,9 +42,11 @@ function ShareFile({generatedURl}:props) {
       if(typeof message.data === "string"){
         const metadata = JSON.parse(message.data)
         if("access" in metadata){
-          
-          setUsersMetadata([...usersMetadata, metadata])
-        }else{
+          setUsersMetadata((prevUsers) => {
+              return [...prevUsers, metadata]
+          });
+        }
+        else{
           fileMetaRef.current = metadata;
         }
         console.log(metadata)
@@ -103,11 +106,34 @@ function ShareFile({generatedURl}:props) {
       fileType : selectedFile.type });
     // console.log(metadata)
     socket?.send(JSON.stringify({ type: 'message', spaceId: space, metadata }));
-    // socket?.send(metadata)
-    // socket?.send(selectedFile)
+
   }
 
   console.log(usersMetadata)
+
+  const allowPermission = (userMetadata:metadata) => {
+    const metadata = JSON.stringify({ 
+      type : 'register',
+      role : 'user',
+      access : "true",
+      spaceId : space,
+      userId : userMetadata.user
+    })
+    socket?.send(metadata)
+    setUsersMetadata(usersMetadata.filter(item => item.user !== userMetadata.user))
+  }
+
+  const removePermission = (userMetadata:metadata) => {
+    const metadata = JSON.stringify({ 
+      type : 'remove',
+      role : 'user',
+      access : "false",
+      spaceId : space,
+      userId : userMetadata.user
+    })
+    socket?.send(metadata)
+    setUsersMetadata(usersMetadata.filter(item => item.user !== userMetadata.user))
+  }
 
   return (
     <>
@@ -152,13 +178,27 @@ function ShareFile({generatedURl}:props) {
       <input type="file" onChange={handleFileChange} />
       <button onClick={sendFileHandler}>send</button>
       {space}
-      {usersMetadata.map((item,index)=>{
-        return <div key={index}>
-
-          abc
-          {item.user}
-        </div>
-      })}
+      <ul className="divide-y divide-gray-200">
+        {usersMetadata.map((item,index) => (
+          <li key={index} className="p-4 flex items-center justify-between space-x-4 border">
+            <span className="text-gray-700">{item.user}</span>
+            <div className="flex space-x-2">
+              <button
+                className="bg-green-500 hover:bg-green-600"
+                onClick={() => allowPermission(item)}
+              >
+                <Check className="h-4 w-4" />
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-600"
+                onClick={() => removePermission(item)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </>
   )
 }

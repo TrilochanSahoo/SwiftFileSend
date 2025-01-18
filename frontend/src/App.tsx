@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Hero from "./component/HeroComponent";
 import Instructions from "./component/Instructions";
 import ShareFile from "./component/ShareFile"
-import ReceiveFile from "./component/receiveFile";
+import ReceiveFile from "./component/ReceiveFile";
 
 function App() {
   const [activeShare, setActiveShare] = useState(false)

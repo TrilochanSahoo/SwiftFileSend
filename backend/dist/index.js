@@ -59,27 +59,67 @@ wss.on('connection', (socket, req) => {
             if (spaces.has(spaId)) {
                 const space = spaces.get(spaId);
                 console.log(space);
+                let userId = 'user' + makeid(7);
                 space.forEach((sp) => {
-                    const [roleData, accessData, connection] = sp;
+                    const [roleData, userData, accessData, connection] = sp;
                     const [type, client] = connection;
-                    console.log(client);
+                    // console.log(client)
                     // console.log('socketArray:', socketArray, 'Type:', typeof socketArray);
                     if (client != socket && client.readyState === ws_1.default.OPEN) {
                         client.send(JSON.stringify({
                             access: false,
-                            user: 'user' + makeid(7)
+                            user: userId
                         }));
                     }
                 });
+                space.add([["role", parsedData.role], ["id", userId], ["access", parsedData.access], ["con", socket]]);
             }
         }
-        else if (parsedData.type === 'register') {
+        else if (parsedData.type === 'register' && parsedData.access === 'true') {
             // spaceId = parsedData.spaceId
             if (!spaces.has(spaceId)) {
                 spaces.set(spaceId, new Set());
             }
-            spaces.get(spaceId).add([["role", parsedData.role], ["access", parsedData.access], ["con", socket]]);
+            if (parsedData.role === 'user') {
+                const space = spaces.get(spaceId);
+                console.log(space);
+                space.forEach((sp) => {
+                    const [roleData, userData, accessData, connection] = sp;
+                    const [type, client] = connection;
+                    if (userData[1] === parsedData.userId) {
+                        accessData[1] = parsedData.access;
+                        if (client != socket && client.readyState === ws_1.default.OPEN) {
+                            client.send(JSON.stringify({
+                                responseType: 200,
+                                message: 'Access Granted'
+                            }));
+                        }
+                    }
+                });
+            }
+            else {
+                spaces.get(spaceId).add([["role", parsedData.role], ["id", parsedData.userId], ["access", parsedData.access], ["con", socket]]);
+            }
             console.log(`User added to group: ${spaceId}`);
+        }
+        else if (parsedData.type === 'remove') {
+            const space = spaces.get(spaceId);
+            console.log(space);
+            space.forEach((sp) => {
+                const [roleData, userData, accessData, connection] = sp;
+                const [type, client] = connection;
+                if (userData[1] === parsedData.userId) {
+                    if (client != socket && client.readyState === ws_1.default.OPEN) {
+                        client.send(JSON.stringify({
+                            responseType: 404,
+                            message: 'Unauthorized User'
+                        }));
+                        client.close(1000, 'Unauthorized User');
+                    }
+                    space.delete(sp);
+                }
+            });
+            console.log(space);
         }
         else if (parsedData.type === 'message') {
             // console.log(parsedData)

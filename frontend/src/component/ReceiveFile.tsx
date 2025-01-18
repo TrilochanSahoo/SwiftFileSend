@@ -34,6 +34,14 @@ function ReceiveFile({generatedURl}:props) {
     newSocket.onmessage = (message)=>{
       if(typeof message.data === "string"){
         const metadata = JSON.parse(message.data)
+        if("message" in metadata && metadata.responseType==200){
+          alert(metadata.message)
+        }
+        else if("message" in metadata && metadata.responseType==404){
+          alert(metadata.message)
+        }else{
+          fileMetaRef.current = metadata;
+        }
         console.log(metadata)
         fileMetaRef.current = metadata;
       }
@@ -92,8 +100,7 @@ function ReceiveFile({generatedURl}:props) {
       fileType : selectedFile.type });
     // console.log(metadata)
     socket?.send(JSON.stringify({ type: 'message', spaceId: space, metadata }));
-    // socket?.send(metadata)
-    // socket?.send(selectedFile)
+
   }
 
   return (
