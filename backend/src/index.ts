@@ -41,15 +41,17 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
                let userId:string = 'user'+makeid(7)
                space.forEach((sp:any) => {
                     const [roleData,userData,accessData,connection] = sp
+                    const [roleType, role] = roleData
                     const [type, client] = connection
                     // console.log(client)
                     // console.log('socketArray:', socketArray, 'Type:', typeof socketArray);
-
-                    if(client != socket && client.readyState === WebSocket.OPEN){
-                        client.send(JSON.stringify({ 
-                            access : false,
-                            user: userId
-                        }))
+                    if(role ==="admin"){
+                        if(client != socket && client.readyState === WebSocket.OPEN){
+                            client.send(JSON.stringify({ 
+                                access : false,
+                                user: userId
+                            }))
+                        }
                     }
                 })
                 space.add([["role", parsedData.role],["id", userId], ["access", parsedData.access],[ "con", socket]]);
@@ -61,9 +63,7 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
                 spaces.set(spaceId, new Set());
             }
             if(parsedData.role === 'user'){
-                
                 const space = spaces.get(spaceId)
-                console.log(space)
                 space.forEach((sp:any) => {
                     const [roleData,userData,accessData,connection] = sp
                     const [type, client] = connection
@@ -85,7 +85,6 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
         }
         else if(parsedData.type === 'remove'){
             const space = spaces.get(spaceId)
-            console.log(space)
             space.forEach((sp:any) => {
                 const [roleData,userData,accessData,connection] = sp
                 const [type, client] = connection
@@ -100,10 +99,8 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
                     space.delete(sp)
                 }
             })
-            console.log(space)
         }
         else if(parsedData.type === 'message'){
-            // console.log(parsedData)
             const spaId = spaceId
             if(spaces.has(spaId)){
                const space = spaces.get(spaId)
@@ -117,9 +114,7 @@ wss.on('connection',(socket,req: IncomingMessage)=>{
             }
         }
     })
-
-    // socket.send('Hello from server')
-
+    
     console.log("user connected",++count)
 
 })
