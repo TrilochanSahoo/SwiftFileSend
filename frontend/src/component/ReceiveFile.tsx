@@ -15,7 +15,7 @@ function ReceiveFile({generatedURl}:props) {
 
   useEffect(()=>{
     const u1 = generatedURl
-    const newSocket = new WebSocket(`ws://localhost:8080?spaceId=${generatedURl}`)
+    const newSocket = new WebSocket(`ws://localhost:3000?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
       
@@ -60,7 +60,7 @@ function ReceiveFile({generatedURl}:props) {
     return () => {
       newSocket.close();
   };
-  },[generatedURl])
+  },[])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileDownload = (arraybuffer:any, filedata:any)=>{

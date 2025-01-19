@@ -21,7 +21,7 @@ function ShareFile({generatedURl}:props) {
 
   useEffect(()=>{
     const u1 = generatedURl
-    const newSocket = new WebSocket(`ws://localhost:8080?spaceId=${generatedURl}`)
+    const newSocket = new WebSocket(`ws://localhost:3000?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
       
@@ -92,7 +92,7 @@ function ShareFile({generatedURl}:props) {
     } else {
         setSelectedFile(null)
     }
-    // console.log(e.target.files[0])
+    // console.log(event.target.files[0])
   }
 
   const sendFileHandler = ()=>{
@@ -104,8 +104,9 @@ function ShareFile({generatedURl}:props) {
     const metadata = JSON.stringify({ 
       fileName : selectedFile.name,
       fileType : selectedFile.type });
-    // console.log(metadata)
-    socket?.send(JSON.stringify({ type: 'message', spaceId: space, metadata }));
+    console.log(selectedFile)
+    socket?.send(JSON.stringify({ type: 'message', spaceId: space, metadata: metadata }));
+    socket?.send(selectedFile)
 
   }
 
