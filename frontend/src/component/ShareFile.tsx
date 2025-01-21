@@ -1,8 +1,10 @@
+import axios from "axios";
 import { Check, QrCode, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react"
 
 interface props {
-    generatedURl : string
+    generatedURl : string,
+    generatedLink : string | null
 }
 
 interface metadata {
@@ -10,17 +12,19 @@ interface metadata {
   user : string
 }
 
-function ShareFile({generatedURl}:props) {
+function ShareFile({generatedURl,generatedLink}:props) {
   const fileMetaRef = useRef(null)
   const [socket,setSocket] = useState<null | WebSocket>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [shareLink, setShareLink] = useState<string | null>(null)
-  // const [filedata, setfiledata] = useState<null | object>(null)
+  const [qrCodeData, setQrCodeData] = useState<string>("")
   const [space,setSpace] = useState("")
   const [usersMetadata,setUsersMetadata] = useState<metadata[]>([])
 
   useEffect(()=>{
     const u1 = generatedURl
+    console.log(generatedLink)
+    setShareLink(generatedLink)
     const newSocket = new WebSocket(`ws://localhost:3000?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
@@ -67,6 +71,29 @@ function ShareFile({generatedURl}:props) {
       newSocket.close();
   };
   },[])
+
+  useEffect(()=>{
+    const url:string = "http://localhost:3000/api/v1/generateQrcode"
+    const fetchqrDate= async()=>{
+      const res = await axios({
+        method:"post",
+        url:url,
+        data:{
+          content : generatedLink
+        }
+      })
+
+      if(res.status==200){
+        setQrCodeData(res.data.src)
+      }
+      else{
+        alert("Please create again the space...")
+      }
+    }
+
+    fetchqrDate()
+
+  },[generatedLink])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFileDownload = (arraybuffer:any, filedata:any)=>{
@@ -149,10 +176,8 @@ function ShareFile({generatedURl}:props) {
                 Select a file to share and generate a QR code for easy access.
               </p>
               <div className="space-y-2">
-                <input type="file" name="" id="" />
-                <button>
-                Share File
-                </button>
+              <input type="file" onChange={handleFileChange} />
+              <button className="border p-4" onClick={sendFileHandler}>Send File</button>
               </div>
             </div>
             <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg">
@@ -160,7 +185,7 @@ function ShareFile({generatedURl}:props) {
                 <div className="space-y-4">
                   <p className="font-medium">Scan this QR code to access the file:</p>
                   <div className="flex justify-center">
-                    {/* <QRCode value={shareLink} size={200} /> */}
+                    <img src={qrCodeData} alt="" className="h-24 w-24" />
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 break-all">{shareLink}</p>
                 </div>
@@ -176,9 +201,6 @@ function ShareFile({generatedURl}:props) {
           </div>
         </div>
       </section>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={sendFileHandler}>send</button>
-      {space}
       <ul className="divide-y divide-gray-200">
         {usersMetadata.map((item,index) => (
           <li key={index} className="p-4 flex items-center justify-between space-x-4 border">

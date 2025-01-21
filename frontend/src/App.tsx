@@ -8,8 +8,8 @@ function App() {
   const [activeShare, setActiveShare] = useState(false)
   const [activeReceive, setActiveReceive] = useState(false)
   const [spaceId, setSpaceId] = useState("")
+  const [generatedLink,setGeneratedLink] = useState("")
 
-  let  generateLink
   let spaceID :string = ""
   const currentUrl = window.location.href;
 
@@ -35,8 +35,8 @@ function App() {
   const createSpaceHandler = ()=>{
     spaceID = 'space'+Math.floor(Math.random() * 1000)
     setSpaceId(spaceID)
-    generateLink = window.location.href+ btoa(spaceID)
-    console.log(generateLink)
+    setGeneratedLink(window.location.href+ btoa(spaceID))
+    console.log(generatedLink)
     setActiveShare(true)
   }
 
@@ -58,8 +58,8 @@ function App() {
       }
       {activeShare && 
         <div>
-          <ShareFile generatedURl = {spaceId}></ShareFile>
-          {generateLink? generateLink:""}
+          <ShareFile generatedURl = {spaceId} generatedLink = {generatedLink}></ShareFile>
+          {generatedLink? generatedLink:""}
         </div>
       }
       
