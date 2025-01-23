@@ -8,7 +8,12 @@ const bodyParser = require('body-parser');
 
 const app:Express = express()
 
-app.use(cors());
+
+app.use(cors({
+    origin: process.env.Frontend_URL, // Frontend running locally on port 3000
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true // If using cookies or authentication
+  }));
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
