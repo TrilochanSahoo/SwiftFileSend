@@ -1,0 +1,9 @@
+version : '3.8'
+services:
+  backend:
+    image: "trilochansahoo/fileshare-ws:v1"
+    container_name: backend_app
+    ports:
+      - 3000:3000
+    environment:
+      - Frontend_URL=${Frontend_URL}

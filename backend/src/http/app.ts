@@ -10,7 +10,7 @@ const app:Express = express()
 
 
 app.use(cors({
-    origin: process.env.Frontend_URL, // Frontend running locally on port 3000
+    origin: process.env.Frontend_URL || "http://localhost:5173", // Frontend running locally on port 3000
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true // If using cookies or authentication
   }));
