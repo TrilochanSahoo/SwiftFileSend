@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Hero from "./component/HeroComponent";
 import Instructions from "./component/Instructions";
 import ShareFile from "./component/ShareFile"
@@ -10,6 +10,7 @@ function App() {
   const [activeReceive, setActiveReceive] = useState(false)
   const [spaceId, setSpaceId] = useState("")
   const [generatedLink,setGeneratedLink] = useState("")
+  const programsRef = useRef<(HTMLDivElement | null)[]>([])
 
   let spaceID :string = ""
   const currentUrl = window.location.href;
@@ -44,12 +45,20 @@ function App() {
   return (
     <>
       <section>
-        <Hero/>
+        <Hero programInputRef = {programsRef}/>
       </section>
-      <section className="bg-gray-900 py-12">
+      <section ref={(el)=>
+        {
+          if (el) programsRef.current[1] = el as HTMLDivElement;
+        }}
+         className="bg-gray-900 py-12">
         <Instructions/>
       </section>
-      <section id="space" className="py-12 bg-gradient-to-t from-[#085078] to-[#85D8CE] text-white">
+      <section ref={(el)=>
+        {
+          if (el) programsRef.current[0] = el as HTMLDivElement;
+        }}
+         id="space" className="py-12 bg-gradient-to-t from-[#085078] to-[#85D8CE] text-white">
       {!activeReceive &&
         
           <div className="max-w-6xl mx-auto text-white items-center text-center">

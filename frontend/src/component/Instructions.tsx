@@ -29,9 +29,9 @@ export default function Instructions() {
             <p className="text-sm md:text-base text-gray-50 mb-4">
               Follow these simple steps to start sharing files effortlessly:
             </p>
-            <a href="#"
+            {/* <a href="#space"
             className="bg-transparent mr-auto hover:bg-[#85D8CE] hover:text-black text-[#85D8CE] rounded shadow hover:shadow-lg py-2 px-4 border border-[#85D8CE] hover:border-transparent">
-            Explore Now</a>
+            Explore Now</a> */}
           </div>
           <div className="ml-0 md:ml-12 lg:w-2/3 sticky">
             <div className="container mx-auto w-full h-full">

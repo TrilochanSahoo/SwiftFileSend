@@ -1,6 +1,17 @@
+import { RefObject } from "react";
 
+type ResultsListProps = {
+    programInputRef: RefObject<(HTMLDivElement | null)[]>;
+  };
+  
+export default function Hero({programInputRef}:ResultsListProps) {
 
-export default function Hero() {
+    const scrollToSection = (index:number)=>{
+        const section = programInputRef.current ? programInputRef.current[index]:"";
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
+    }
     return (
         <section className=" relative bg-white dark:bg-gray-900 min-h-screen overflow-hidden">
             <div className="absolute"
@@ -21,12 +32,12 @@ export default function Hero() {
                     <p className="max-w-lg mb-6 text-gray-500 lg:mb-8 dark:text-white">
                         Effortlessly share files in real-time with secure, fast, and reliable cross-platform compatibility, ensuring seamless collaboration and synchronization anytime.</p>
                     <div className="mt-48">
-                        <a href="#" className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+                        <button onClick={()=> scrollToSection(0)} className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
                             Get started
-                        </a>
-                        <a href="#" className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                        </button>
+                        <button onClick={()=> scrollToSection(1)} className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                             Learn More
-                        </a> 
+                        </button> 
                     </div>
                 </div>
                 <div className="relative top-1/2 hidden lg:mt-0 lg:col-span-5 lg:flex">
