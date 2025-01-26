@@ -68,7 +68,7 @@ function App() {
         </div>
       }
       </section>
-      <section className="bg-gray-900">
+      <section className="relative bottom-0 bg-gray-900">
         <Footer/>
       </section>
     </>
