@@ -45,7 +45,7 @@ function App() {
       <section>
         <Hero/>
       </section>
-      <section>
+      <section className="bg-gray-900 py-12">
         <Instructions/>
       </section>
       <section>
