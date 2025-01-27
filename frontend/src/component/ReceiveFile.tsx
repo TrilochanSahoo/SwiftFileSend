@@ -9,7 +9,6 @@ function ReceiveFile({generatedURl}:props) {
   const fileMetaRef = useRef(null)
   const [socket,setSocket] = useState<null | WebSocket>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [shareLink, setShareLink] = useState<string | null>(null)
   // const [filedata, setfiledata] = useState<null | object>(null)
   const [space,setSpace] = useState("")
 
