@@ -25,7 +25,7 @@ function ShareFile({generatedURl,generatedLink}:props) {
     const u1 = generatedURl
     console.log(generatedLink)
     setShareLink(generatedLink)
-    const newSocket = new WebSocket(`ws://localhost:3000?spaceId=${generatedURl}`)
+    const newSocket = new WebSocket(`${import.meta.env.VITE_BACKEND_URL_ws}?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
       
@@ -73,7 +73,7 @@ function ShareFile({generatedURl,generatedLink}:props) {
   },[])
 
   useEffect(()=>{
-    const url:string = "http://localhost:3000/api/v1/generateQrcode"
+    const url:string = `${import.meta.env.VITE_BACKEND_URL}/api/v1/generateQrcode`
     const fetchqrDate= async()=>{
       const res = await axios({
         method:"post",

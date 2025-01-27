@@ -14,7 +14,7 @@ function ReceiveFile({generatedURl}:props) {
 
   useEffect(()=>{
     const u1 = generatedURl
-    const newSocket = new WebSocket(`ws://localhost:3000?spaceId=${generatedURl}`)
+    const newSocket = new WebSocket(`${import.meta.env.VITE_BACKEND_URL_ws}?spaceId=${generatedURl}`)
 
     newSocket.onopen = ()=>{
       

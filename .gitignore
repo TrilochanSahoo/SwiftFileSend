@@ -4,3 +4,4 @@ backend/trilochan-password.pem
 backend/dist/**
 
 backend/.env
+frontend/.env
